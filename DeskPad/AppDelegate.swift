@@ -7,8 +7,20 @@ enum AppDelegateAction: Action {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
+    var windowCaptureManager: WindowCaptureManager!
+    var windowCaptureMenuManager: WindowCaptureMenuManager!
 
     func applicationDidFinishLaunching(_: Notification) {
+        windowCaptureManager = WindowCaptureManager()
+        windowCaptureMenuManager = WindowCaptureMenuManager(windowCaptureManager: windowCaptureManager)
+
+        // Manually subscribe menu manager since it's not in view hierarchy
+        store.subscribe(windowCaptureMenuManager) { subscription in
+            subscription
+                .select(WindowCaptureMenuViewData.fragment(of:))
+                .skipRepeats()
+        }
+
         let viewController = ScreenViewController()
         window = NSWindow(contentViewController: viewController)
         window.delegate = viewController
@@ -24,16 +36,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.collectionBehavior.insert(.fullScreenNone)
 
         let mainMenu = NSMenu()
-        let mainMenuItem = NSMenuItem()
-        let subMenu = NSMenu(title: "MainMenu")
+
+        let appMenuItem = NSMenuItem()
+        let appSubMenu = NSMenu(title: "DeskPad")
         let quitMenuItem = NSMenuItem(
-            title: "Quit",
+            title: "Quit DeskPad",
             action: #selector(NSApp.terminate),
             keyEquivalent: "q"
         )
-        subMenu.addItem(quitMenuItem)
-        mainMenuItem.submenu = subMenu
-        mainMenu.items = [mainMenuItem]
+        appSubMenu.addItem(quitMenuItem)
+        appMenuItem.submenu = appSubMenu
+
+        let captureMenuItem = NSMenuItem()
+        captureMenuItem.submenu = windowCaptureMenuManager.createMenu()
+        captureMenuItem.title = "Capture"
+
+        mainMenu.items = [appMenuItem, captureMenuItem]
         NSApplication.shared.mainMenu = mainMenu
 
         store.dispatch(AppDelegateAction.didFinishLaunching)
