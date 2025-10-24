@@ -9,7 +9,7 @@ enum WindowCaptureAction: Action {
     case refreshWindowList
 }
 
-private var windowListRefreshTimer: Timer?
+private nonisolated(unsafe) var windowListRefreshTimer: Timer?
 
 func windowCaptureSideEffect() -> SideEffect {
     return { _, dispatch, _ in

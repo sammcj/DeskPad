@@ -52,7 +52,10 @@ help:
 build:
 	@echo "Building $(TARGET) ($(CONFIGURATION))..."
 	xcodebuild $(XCODEBUILD_FLAGS) build
-	@echo "Build complete: $(APP_BUNDLE)"
+	@echo "Copying app to $(BUILD_DIR)/$(PRODUCT_NAME)..."
+	@mkdir -p $(BUILD_DIR)
+	@cp -R $(APP_BUNDLE) $(BUILD_DIR)/
+	@echo "Build complete: $(BUILD_DIR)/$(PRODUCT_NAME)"
 
 debug:
 	@$(MAKE) build CONFIGURATION=Debug

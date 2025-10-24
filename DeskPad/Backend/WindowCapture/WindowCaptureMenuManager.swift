@@ -1,7 +1,8 @@
 import AppKit
 import ReSwift
 
-class WindowCaptureMenuManager: SubscriberViewController<WindowCaptureMenuViewData> {
+@MainActor
+final class WindowCaptureMenuManager: SubscriberViewController<WindowCaptureMenuViewData> {
     private var captureMenu: NSMenu?
     private let windowCaptureManager: WindowCaptureManager
 

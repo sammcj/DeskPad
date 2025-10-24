@@ -5,7 +5,8 @@ enum ScreenViewAction: Action {
     case setDisplayID(CGDirectDisplayID)
 }
 
-class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDelegate {
+@MainActor
+final class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDelegate {
     override func loadView() {
         view = NSView()
         view.wantsLayer = true

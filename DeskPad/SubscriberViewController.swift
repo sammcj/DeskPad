@@ -1,7 +1,8 @@
 import AppKit
 import ReSwift
 
-class SubscriberViewController<ViewData: ViewDataType>: NSViewController, StoreSubscriber {
+@MainActor
+class SubscriberViewController<ViewData: ViewDataType>: NSViewController, @preconcurrency StoreSubscriber {
     typealias StoreSubscriberStateType = ViewData.StateFragment
 
     override func viewWillAppear() {
@@ -21,9 +22,7 @@ class SubscriberViewController<ViewData: ViewDataType>: NSViewController, StoreS
     }
 
     func newState(state: ViewData.StateFragment) {
-        DispatchQueue.main.async { [weak self] in
-            self?.update(with: ViewData(for: state))
-        }
+        update(with: ViewData(for: state))
     }
 
     func update(with _: ViewData) {

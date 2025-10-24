@@ -1,7 +1,8 @@
 import AppKit
 
 let app = NSApplication.shared
-let delegate = AppDelegate()
-app.delegate = delegate
+app.delegate = MainActor.assumeIsolated {
+    AppDelegate()
+}
 
-_ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
+app.run()

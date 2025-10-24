@@ -2,7 +2,8 @@ import AppKit
 import Foundation
 import ScreenCaptureKit
 
-class WindowCaptureManager: NSObject {
+@MainActor
+final class WindowCaptureManager: NSObject {
     private var stream: SCStream?
     private var streamOutput: StreamOutput?
     private var renderWindow: NSWindow?
@@ -181,9 +182,11 @@ class WindowCaptureManager: NSObject {
 }
 
 extension WindowCaptureManager: SCStreamDelegate {
-    func stream(_: SCStream, didStopWithError error: Error) {
+    nonisolated func stream(_: SCStream, didStopWithError error: Error) {
         print("Stream stopped with error: \(error)")
-        stopCapture()
+        Task { @MainActor in
+            stopCapture()
+        }
     }
 }
 
@@ -201,9 +204,7 @@ private class StreamOutput: NSObject, SCStreamOutput {
             return
         }
 
-        DispatchQueue.main.async { [weak self] in
-            self?.renderView?.updateFrame(imageBuffer: imageBuffer)
-        }
+        renderView?.updateFrame(imageBuffer: imageBuffer)
     }
 }
 

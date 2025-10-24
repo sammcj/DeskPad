@@ -2,6 +2,9 @@ import Foundation
 
 extension NSScreen {
     var displayID: CGDirectDisplayID {
-        return deviceDescription[NSDeviceDescriptionKey(rawValue: "NSScreenNumber")] as! CGDirectDisplayID
+        guard let displayID = deviceDescription[NSDeviceDescriptionKey(rawValue: "NSScreenNumber")] as? CGDirectDisplayID else {
+            return 0
+        }
+        return displayID
     }
 }

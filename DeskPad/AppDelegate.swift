@@ -5,7 +5,8 @@ enum AppDelegateAction: Action {
     case didFinishLaunching
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     var windowCaptureManager: WindowCaptureManager!
     var windowCaptureMenuManager: WindowCaptureMenuManager!
